@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Trang chủ{% endblock %}
+
+{% block styles %}
+{{ super() }}
+<style>
+    .welcome-box {
+        text-align: center;
+        padding: 30px 20px;
+        background: #fbfbfb;
+        border-radius: 8px;
+        border: 1px dashed #dcdcdc;
+    }
+
+    .status {
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 15px;
+    }
+
+    .open {
+        color: green;
+    }
+
+    .closed {
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="welcome-box">
+    <h1>Chào mừng đến với {{ shop.name }}</h1>
+    <p>Địa chỉ: <strong>{{ shop.address }}</strong> | Hotline: <strong>{{ shop.phone }}</strong></p>
+    <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+    <p>Bây giờ là <strong>{{ gio }}h</strong></p>
+
+    {% if dang_mo %}
+        <p class="status open">Quán đang mở cửa</p>
+    {% else %}
+        <p class="status closed">Quán đã đóng cửa</p>
+    {% endif %}
+</div>
+{% endblock %}

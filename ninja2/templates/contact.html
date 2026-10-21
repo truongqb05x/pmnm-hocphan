@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+<!-- Thử nghiệm viết ngoài block theo yêu cầu bài học (sẽ bị Jinja2 bỏ qua, không hiển thị) -->
+<h1>Nội dung này viết ngoài block trong contact.html (sẽ không hiển thị)</h1>
+
+{% block title %}Liên hệ{% endblock %}
+
+{% block content %}
+<h1>Thông tin liên hệ</h1>
+
+<div style="background: #fdfefe; border: 1px solid #d6dbdf; border-radius: 8px; padding: 20px; margin-top: 15px;">
+    <p><strong>Tên quán:</strong> {{ shop.name }}</p>
+    <p><strong>Địa chỉ:</strong> {{ shop.address }}</p>
+    <p><strong>Điện thoại:</strong> {{ shop.phone }}</p>
+</div>
+{% endblock %}

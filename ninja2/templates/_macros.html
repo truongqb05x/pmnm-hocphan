@@ -1,0 +1,39 @@
+{# Macro hiển thị một thẻ món ăn #}
+{% macro item_card(item) %}
+<div class="item-card{% if item.available is defined and not item.available %} het-hang{% endif %}">
+    <div class="item-img-tag"><code>{{ item.image }}</code></div>
+    <h3 class="item-name">{{ item.name|title }}</h3>
+    <p class="gia">{{ item.price|vnd }}</p>
+    {% if item.available is defined %}
+    <span class="status-badge {{ 'con-hang' if item.available else 'het-hang' }}">
+        {{ "Còn hàng" if item.available else "Hết hàng" }}
+    </span>
+    {% endif %}
+</div>
+{% endmacro %}
+
+{# Macro hiển thị thanh phân trang #}
+{% macro pagination(page, pages, endpoint) %}
+<div class="pagination">
+    {% if page > 1 %}
+        <a href="{{ url_for(endpoint, page=page - 1) }}">&laquo; Trước</a>
+        <span> &middot; </span>
+    {% endif %}
+
+    {% for p in range(1, pages + 1) %}
+        {% if p == page %}
+            <strong>{{ p }}</strong>
+        {% else %}
+            <a href="{{ url_for(endpoint, page=p) }}">{{ p }}</a>
+        {% endif %}
+        {% if not loop.last %}
+            <span> &middot; </span>
+        {% endif %}
+    {% endfor %}
+
+    {% if page < pages %}
+        <span> &middot; </span>
+        <a href="{{ url_for(endpoint, page=page + 1) }}">Sau &raquo;</a>
+    {% endif %}
+</div>
+{% endmacro %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}404 - Không tìm thấy trang{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 40px 0;">
+    <h1 style="font-size: 50px; color: #e74c3c; margin-bottom: 10px;">404</h1>
+    <h2>Trang không tồn tại</h2>
+    <p style="color: #666; margin: 15px 0;">Đường dẫn bạn yêu cầu không tìm thấy trên hệ thống của {{ shop.name }}.</p>
+    <p><a href="/" style="color: #2980b9; font-weight: bold; text-decoration: none;">← Quay lại Trang chủ</a></p>
+</div>
+{% endblock %}
