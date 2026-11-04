@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 
@@ -13,6 +13,9 @@ app.config["SECRET_KEY"] = "dev-chi-dung-khi-phat-trien"
 app.config["SQLALCHEMY_DATABASE_URI"] = \
     "sqlite:///qlsv.db"              
 db.init_app(app) 
+
+TEXT = {"Content-Type": "text/plain; charset=utf-8"}
+
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -25,6 +28,7 @@ class Student(db.Model):
 
     def __repr__(self):
         return f"<Student {self.mssv} {self.name}>"
+
 with app.app_context():
     db.create_all()
 
@@ -54,6 +58,63 @@ def add_sample():
             f"sau commit = {an.id}")
 
 
+@app.get("/thu-truy-van")
+def try_queries():
+    if db.session.scalar(
+        db.select(func.count(Student.id))) == 0:
+        return "Chưa có dữ liệu, hãy mở /them-mau trước."
+    lines = []
+    lines.append(f"1. get(3): {db.session.get(Student, 3)}")
+    lines.append(f"2. get(99): {db.session.get(Student, 99)}")
+    everyone = db.session.execute(
+        db.select(Student)).scalars().all()
+    lines.append(f"3. Tất cả: {len(everyone)} sinh viên")
+    stmt = (db.select(Student)
+            .where(Student.gpa >= 8)
+            .order_by(Student.gpa.desc()))
+    good = db.session.execute(stmt).scalars().all()
+    lines.append(f"4. Điểm >= 8: {good}")
+    binh = db.session.scalar(db.select(Student)
+                             .filter_by(mssv="23T1020002"))
+    lines.append(f"5. MSSV 23T1020002: {binh}")
+    count = db.session.scalar(
+        db.select(func.count(Student.id)))
+    avg = db.session.scalar(db.select(func.avg(Student.gpa)))
+    lines.append(f"6. Số SV: {count}, điểm TB: {avg:.2f}")
+    return "\n".join(lines), TEXT
+
+
+@app.get("/")
+@app.get("/danh-sach")
+def show_students():
+    count = db.session.scalar(
+        db.select(func.count(Student.id))) or 0
+    if count == 0:
+        return render_template("index.html", count=0, everyone=[], avg=0.0)
+
+    student_3 = db.session.get(Student, 3)
+    student_99 = db.session.get(Student, 99)
+    everyone = db.session.execute(
+        db.select(Student).order_by(Student.id)).scalars().all()
+    stmt = (db.select(Student)
+            .where(Student.gpa >= 8)
+            .order_by(Student.gpa.desc()))
+    good = db.session.execute(stmt).scalars().all()
+    binh = db.session.scalar(db.select(Student)
+                             .filter_by(mssv="23T1020002"))
+    avg = db.session.scalar(db.select(func.avg(Student.gpa))) or 0.0
+
+    return render_template(
+        "index.html",
+        count=count,
+        student_3=student_3,
+        student_99=student_99,
+        everyone=everyone,
+        good=good,
+        binh=binh,
+        avg=avg
+    )
+
+
 if __name__ == "__main__":
     app.run(debug=True)
-
